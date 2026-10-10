@@ -1,3 +1,9 @@
 {
-    "mdb.showMongoDBConnectionExplorer": true
+    "mdb.showMongoDBConnectionExplorer": true,
+    "mdb.presetConnections": [
+        {
+            "name": "Preset Connection",
+            "connectionString": "mongodb://localhost:27017"
+        }
+    ]
 }
