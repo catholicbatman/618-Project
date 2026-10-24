@@ -5,5 +5,7 @@
             "name": "Preset Connection",
             "connectionString": "mongodb://localhost:27017"
         }
-    ]
+    ],
+    "remote.autoForwardPortsFallback": 0,
+    "editor.formatOnSave": true
 }
