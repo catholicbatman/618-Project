@@ -7,7 +7,7 @@ export function Recipe({
   ingredientList,
   image,
   author,
-  _id,
+  id,
   fullRecipe = false,
 }) {
   return (
@@ -15,7 +15,7 @@ export function Recipe({
       {fullRecipe ? (
         <h3>{title}</h3>
       ) : (
-        <Link to={`/recipes/${_id}`}>
+        <Link to={`/recipes/${id}`}>
           <h3>{title}</h3>
         </Link>
       )}
@@ -27,7 +27,7 @@ export function Recipe({
       {author && (
         <em>
           {fullRecipe && <br />}
-          Provided by <User id={author} />
+          Provided by <User {...author} />
         </em>
       )}
     </article>
@@ -37,7 +37,7 @@ Recipe.propTypes = {
   title: PropTypes.string.isRequired,
   ingredientList: PropTypes.array.isRequired,
   image: PropTypes.string.isRequired,
-  author: PropTypes.string,
-  _id: PropTypes.string.isRequired,
+  author: PropTypes.shape(User.propTypes),
+  id: PropTypes.string.isRequired,
   fullRecipe: PropTypes.bool,
 }

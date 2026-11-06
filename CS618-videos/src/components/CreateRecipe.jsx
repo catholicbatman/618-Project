@@ -1,7 +1,15 @@
-import { useQueryClient, useMutation } from '@tanstack/react-query'
+/*import { useQueryClient, useMutation } from '@tanstack/react-query'*/
 import { useState } from 'react'
-import { createRecipe } from '../api/recipes'
+/*import { createRecipe } from '../api/recipes'*/
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { Link } from 'react-router-dom'
+
+import { useMutation as useGraphQLMutation } from '@apollo/client/react/index.js'
+import {
+  CREATE_RECIPE,
+  GET_RECIPES,
+  GET_RECIPES_BY_AUTHOR,
+} from '../api/graphql/recipes.js'
 
 export function CreateRecipe() {
   const [title, setTitle] = useState('')
@@ -9,16 +17,22 @@ export function CreateRecipe() {
   const [image, setImage] = useState('')
   const [token] = useAuth()
 
-  const queryClient = useQueryClient()
+  /*const queryClient = useQueryClient()*/
 
-  const createRecipeMutation = useMutation({
+  const [createRecipe, { loading, data }] = useGraphQLMutation(CREATE_RECIPE, {
+    variables: { title, ingredientList, image },
+    context: { headers: { Authorization: `Bearer ${token}` } },
+    refetchQueries: [GET_RECIPES, GET_RECIPES_BY_AUTHOR],
+  })
+
+  /*const createRecipeMutation = useMutation({
     mutationFn: () => createRecipe(token, { title, ingredientList, image }),
     onSuccess: () => queryClient.invalidateQueries(['recipes']),
-  })
+  })*/
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    createRecipeMutation.mutate()
+    createRecipe()
   }
 
   if (!token) return <div>Please log in to add a new recipe.</div>
@@ -46,14 +60,24 @@ export function CreateRecipe() {
       <br />
       <div> Enter URL image of recipe: </div>
       <input value={image} onChange={(e) => setImage(e.target.value)} />
+      {data?.createRecipe ? (
+        <>
+          <br />
+          Recipe {''}
+          <Link to={`/recipes/${data.createRecipe.id}`}>
+            {data.createRecipe.title}
+          </Link>{' '}
+          created Successfully!
+        </>
+      ) : null}
       <br />
       <br />
       <input
         type='submit'
-        value={createRecipeMutation.isPending ? 'Adding...' : 'Add'}
-        disabled={!title || createRecipeMutation.isPending}
+        value={loading ? 'Adding...' : 'Add'}
+        disabled={!title || loading}
       />
-      {createRecipeMutation.isSuccess ? (
+      {data?.createRecipe ? (
         <>
           <br />
           Recipe added successfully!

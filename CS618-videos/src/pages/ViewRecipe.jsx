@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { recipeTrackEvent } from '../api/events.js'
 import { Helmet } from 'react-helmet-async'
 import { RecipeStats } from '../components/RecipeStats.jsx'
+import { getUserInfo } from '../api/users.js'
 
 export function ViewRecipe({ recipeId }) {
   const [session, setSession] = useState()
@@ -33,11 +34,20 @@ export function ViewRecipe({ recipeId }) {
     queryFn: () => getRecipeById(recipeId),
   })
   const recipe = recipeQuery.data
+
+  const userInfoQuery = useQuery({
+    queryKey: ['users', recipe?.author],
+    queryFn: () => getUserInfo(recipe?.author),
+    enabled: Boolean(recipe?.author),
+  })
+  const userInfo = userInfoQuery.data ?? {}
+
   return (
     <div style={{ padding: 8 }}>
       {recipe && (
         <Helmet>
           <title>{recipe.title} | Full-Stack Recipe Hub</title>
+          <meta property='og:article:author' content={userInfo.username} />
         </Helmet>
       )}
       <Header />
@@ -48,7 +58,7 @@ export function ViewRecipe({ recipeId }) {
       <hr />
       {recipe ? (
         <div>
-          <Recipe {...recipe} fullRecipe />
+          <Recipe {...recipe} fullRecipe id={recipeId} author={userInfo} />
           <hr /> <RecipeStats recipeId={recipeId} />
         </div>
       ) : (

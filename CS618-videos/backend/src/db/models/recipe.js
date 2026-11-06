@@ -6,6 +6,7 @@ const recipeSchema = new Schema(
     ingredientList: { type: Array, required: true },
     image: { type: String, required: true },
     tags: [String],
+    likes: Number
   },
   { timestamps: true },
 )

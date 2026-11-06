@@ -40,6 +40,13 @@ export async function getRecipeById(recipeId) {
   return await Recipe.findById(recipeId)
 }
 
+export async function updateLikes(recipeId) {
+  return await Recipe.findOneAndUpdate(
+    { _id: recipeId },
+    { $set: { $inc: { likes: 1 } } },
+  )
+}
+
 export async function updateRecipe(
   userId,
   recipeId,
