@@ -9,6 +9,7 @@ import { recipeTrackEvent } from '../api/events.js'
 import { Helmet } from 'react-helmet-async'
 import { RecipeStats } from '../components/RecipeStats.jsx'
 import { getUserInfo } from '../api/users.js'
+import { updateLikes } from '../../backend/src/services/recipes.js'
 
 export function ViewRecipe({ recipeId }) {
   const [session, setSession] = useState()
@@ -42,6 +43,15 @@ export function ViewRecipe({ recipeId }) {
   })
   const userInfo = userInfoQuery.data ?? {}
 
+  const giveLikeMutation = useMutation({
+    mutationFn: (recipeId) => updateLikes(recipeId),
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    giveLikeMutation.mutate()
+  }
+
   return (
     <div style={{ padding: 8 }}>
       {recipe && (
@@ -59,6 +69,28 @@ export function ViewRecipe({ recipeId }) {
       {recipe ? (
         <div>
           <Recipe {...recipe} fullRecipe id={recipeId} author={userInfo} />
+          Likes of this recipe: {recipe.likes}
+          <form onSubmit={handleSubmit}>
+            <br />
+            <input
+              type='submit'
+              value={
+                giveLikeMutation.isPending ? 'Liking...' : 'Like this post'
+              }
+            />
+            {giveLikeMutation.isSuccess ? (
+              <>
+                <br />
+                You liked this post!!
+              </>
+            ) : null}
+            {giveLikeMutation.isError ? (
+              <>
+                <br />
+                {giveLikeMutation.error.message}
+              </>
+            ) : null}
+          </form>
           <hr /> <RecipeStats recipeId={recipeId} />
         </div>
       ) : (

@@ -34,10 +34,33 @@ export const GET_RECIPES_BY_AUTHOR = gql`
 `
 
 export const CREATE_RECIPE = gql`
-  mutation createRecipe ($title: String!, $ingredientList: [String!], $image: String!, $tags: [String!]) {
-    createRecipe(title: $title, ingredientList: $ingredientList, image: $image, tags: $tags) {
+  mutation createRecipe(
+    $title: String!
+    $ingredientList: [String!]
+    $image: String!
+    $tags: [String!]
+    $likes: Int
+  ) {
+    createRecipe(
+      title: $title
+      ingredientList: $ingredientList
+      image: $image
+      tags: $tags
+      likes: $likes
+    ) {
       id
       title
+    }
+  }
+`
+export const NEW_LIKE = gql`
+  mutation newLike(
+    $recipeId: String!
+  ) {
+    newLike(
+      recipeId: $recipeId
+    ) {
+      id
     }
   }
 `

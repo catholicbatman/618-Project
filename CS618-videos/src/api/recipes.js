@@ -13,6 +13,13 @@ export const getRecipeById = async (recipeId) => {
   return await res.json()
 }
 
+export const getLikesById = async (recipeId) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/recipes/${recipeId}`,
+  )
+  return await res.json()
+}
+
 export const createRecipe = async (token, recipe) => {
   const res = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/

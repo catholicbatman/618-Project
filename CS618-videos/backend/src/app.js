@@ -8,6 +8,7 @@ import { ApolloServer } from '@apollo/server'
 import { typeDefs, resolvers } from './graphql/index.js'
 import { expressMiddleware } from '@apollo/server/express4'
 import { optionalAuth } from './middleware/jwt.js'
+import { likeRoutes } from './routes/likes.js'
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -33,6 +34,7 @@ apolloServer.start().then(() =>
 recipesRoutes(app)
 userRoutes(app)
 eventRoutes(app)
+likeRoutes(app)
 
 app.get('/', (req, res) => {
   res.send('Hello from Express live!')

@@ -13,6 +13,7 @@ import {
 
 export function CreateRecipe() {
   const [title, setTitle] = useState('')
+  const [likes] = useState(0)
   const [ingredientList, setIngredientList] = useState('')
   const [image, setImage] = useState('')
   const [token] = useAuth()
@@ -20,7 +21,7 @@ export function CreateRecipe() {
   /*const queryClient = useQueryClient()*/
 
   const [createRecipe, { loading, data }] = useGraphQLMutation(CREATE_RECIPE, {
-    variables: { title, ingredientList, image },
+    variables: { title, ingredientList, image, likes },
     context: { headers: { Authorization: `Bearer ${token}` } },
     refetchQueries: [GET_RECIPES, GET_RECIPES_BY_AUTHOR],
   })

@@ -3,7 +3,7 @@ import { User } from '../db/models/user.js'
 
 export async function createRecipe(
   userId,
-  { title, ingredientList, image, tags },
+  { title, ingredientList, image, tags, likes },
 ) {
   const recipe = new Recipe({
     title,
@@ -11,6 +11,7 @@ export async function createRecipe(
     ingredientList,
     image,
     tags,
+    likes,
   })
   return await recipe.save()
 }
@@ -40,11 +41,22 @@ export async function getRecipeById(recipeId) {
   return await Recipe.findById(recipeId)
 }
 
-export async function updateLikes(recipeId) {
+/*New code below*/
+export async function updateLikes(
+  recipeId,
+) {
   return await Recipe.findOneAndUpdate(
-    { _id: recipeId },
-    { $set: { $inc: { likes: 1 } } },
+    { _id: recipeId},
+    { $inc: { "likes": 1 }},
+    { new: true },
   )
+}
+
+/*{ $set: { $inc: { likes: 1 } } },*/
+
+export async function getTotalLikes(recipeId) {
+  const recipe = Recipe.findById(recipeId)
+  return await recipe
 }
 
 export async function updateRecipe(
