@@ -1,4 +1,4 @@
-import { updateLikes, getTotalLikes} from '../services/recipes.js'
+import { createLike, getTotalLikes } from '../services/likes.js'
 import { getRecipeById } from '../services/recipes.js'
 
 export function likeRoutes(app) {
@@ -7,7 +7,7 @@ export function likeRoutes(app) {
       const { recipeId } = req.body
       const recipe = await getRecipeById(recipeId)
       if (recipe === null) return res.status(400).end()
-      updateLikes({ recipeId})
+      createLike({ recipeId })
       return res.json()
     } catch (err) {
       console.error('error tracking like', err)
@@ -28,4 +28,3 @@ export function likeRoutes(app) {
     }
   })
 }
-

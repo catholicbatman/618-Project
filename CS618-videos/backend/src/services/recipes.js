@@ -42,21 +42,23 @@ export async function getRecipeById(recipeId) {
 }
 
 /*New code below*/
-export async function updateLikes(
-  recipeId,
-) {
+export async function updateLikes(recipeId) {
   return await Recipe.findOneAndUpdate(
-    { _id: recipeId},
-    { $inc: { "likes": 1 }},
+    { _id: recipeId },
+    { $inc: { likes: 1 } },
     { new: true },
   )
 }
 
-/*{ $set: { $inc: { likes: 1 } } },*/
 
 export async function getTotalLikes(recipeId) {
-  const recipe = Recipe.findById(recipeId)
-  return await recipe
+  try {
+    const recipe = await Recipe.findById(recipeId)
+    if (!recipe) return recipe
+    return await recipe.likes
+  } catch (err) {
+    return console.error()
+  }
 }
 
 export async function updateRecipe(

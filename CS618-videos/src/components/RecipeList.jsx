@@ -1,6 +1,8 @@
 import { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Recipe } from './Recipe'
+//import { QueryLikesGraphQL } from './QueryLikesGraphQL'
+//{QueryLikesGraphQL({ recipeId })}
 export function RecipeList({ recipes = [] }) {
   return (
     <div>

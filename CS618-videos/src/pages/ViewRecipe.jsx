@@ -9,7 +9,13 @@ import { recipeTrackEvent } from '../api/events.js'
 import { Helmet } from 'react-helmet-async'
 import { RecipeStats } from '../components/RecipeStats.jsx'
 import { getUserInfo } from '../api/users.js'
-import { updateLikes } from '../../backend/src/services/recipes.js'
+//import { updateLikes } from '../../backend/src/services/recipes.js'
+//import { UDPATE_LIKES } from '../api/graphql/recipes.js'
+import { useMutation as useGraphQLMutation } from '@apollo/client/react/index.js'
+//import { useQuery as useGraphQLQuery } from '@apollo/client/react/index.js'
+import { UPDATE_LIKES } from '../api/graphql/recipes.js'
+//import { GET_TOTAL_LIKES } from '../api/graphql/recipes.js'
+//import { trackLike } from '../api/likes.js'
 
 export function ViewRecipe({ recipeId }) {
   const [session, setSession] = useState()
@@ -30,6 +36,10 @@ export function ViewRecipe({ recipeId }) {
     }
   }, [])
 
+  /*const createLikeMutation = useMutation({
+    mutationFn: () => trackLike({ recipeId }),
+  })*/
+
   const recipeQuery = useQuery({
     queryKey: ['recipe', recipeId],
     queryFn: () => getRecipeById(recipeId),
@@ -43,13 +53,31 @@ export function ViewRecipe({ recipeId }) {
   })
   const userInfo = userInfoQuery.data ?? {}
 
-  const giveLikeMutation = useMutation({
-    mutationFn: (recipeId) => updateLikes(recipeId),
+  //const [token] = useAuth()
+
+  /*const [getTotalLikes] = useGraphQLMutation(GET_TOTAL_LIKES, {
+    variables: { recipeId },
+    //context: { headers: { Authorization: `Bearer ${token}` } },
+    //onError: () => alert(console.error.message),
+  })*/
+
+  const [updateLikes, { loading, data }] = useGraphQLMutation(UPDATE_LIKES, {
+    variables: { recipeId },
+    //context: { headers: { Authorization: `Bearer ${token}` } },
+    //onError: () => alert(console.error.message),
   })
+
+  /*const queryClient = useQueryClient()
+
+  const giveLikeMutation = useMutation({
+    mutationFn: (recipeId) => UPDATE_LIKES(recipeId),
+    onSuccess: () => queryClient.invalidateQueries(['recipes']),
+  })*/
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    giveLikeMutation.mutate()
+    updateLikes()
+    //createLikeMutation.mutate()
   }
 
   return (
@@ -75,19 +103,13 @@ export function ViewRecipe({ recipeId }) {
             <input
               type='submit'
               value={
-                giveLikeMutation.isPending ? 'Liking...' : 'Like this post'
+                loading ? 'Liking...' : 'Like this post'
               }
             />
-            {giveLikeMutation.isSuccess ? (
+            {data?.updateLikes ? (
               <>
                 <br />
                 You liked this post!!
-              </>
-            ) : null}
-            {giveLikeMutation.isError ? (
-              <>
-                <br />
-                {giveLikeMutation.error.message}
               </>
             ) : null}
           </form>

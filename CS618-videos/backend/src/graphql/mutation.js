@@ -1,12 +1,16 @@
 import { createUser, loginUser } from '../services/users.js'
-import { createRecipe, updateLikes } from '../services/recipes.js'
+import {
+  createRecipe,
+  //getTotalLikes,
+  updateLikes,
+} from '../services/recipes.js'
 import { GraphQLError } from 'graphql'
 export const mutationSchema = `#graphql
     type Mutation {
         signupUser(username: String!, password: String!): User
         loginUser(username: String!, password: String!): String
         createRecipe(title: String!, ingredientList: [String!], image: String! tags:[String], likes: Int): Recipe
-        newLike(postId: String!): Recipe
+        updateLikes(recipeId: ID): Recipe
     }
 `
 export const mutationResolver = {
@@ -40,8 +44,8 @@ export const mutationResolver = {
         likes,
       })
     },
-    newLike: async (parent, { recipeId }) => {
-      return await updateLikes({ recipeId })
+    updateLikes: async (parent, args) => {
+      return await updateLikes(args.recipeId)
     },
   },
 }

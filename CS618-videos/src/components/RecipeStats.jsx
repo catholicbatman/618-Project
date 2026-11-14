@@ -5,6 +5,7 @@ import {
   getDailyViews,
   getDailyDurations,
 } from '../api/events.js'
+//import { getTotalLikes } from '../api/likes.js'
 
 import {
   VictoryChart,
@@ -27,15 +28,21 @@ export function RecipeStats({ recipeId }) {
     queryKey: ['dailyDurations', recipeId],
     queryFn: () => getDailyDurations(recipeId),
   })
+  /*const totalLikes = useQuery({
+    queryKey: ['totalLikes', recipeId],
+    queryFn: () => getTotalLikes(recipeId),
+  })*/
   if (
     totalViews.isLoading ||
     dailyViews.isLoading ||
     dailyDurations.isLoading
+    //totalLikes.isLoading
   ) {
     return <div>loading stats...</div>
   }
   return (
     <div>
+      <br />
       <b>{totalViews.data?.views} total views</b>
       <VictoryChart domainPadding={16}>
         <VictoryBar

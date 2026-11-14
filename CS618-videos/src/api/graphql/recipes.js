@@ -23,6 +23,14 @@ export const GET_RECIPES = gql`
     }
   }
 `
+export const GET_TOTAL_LIKES = gql`
+  ${RECIPE_FIELDS}
+  query getRecipeLikes($recipeId: ID) {
+    likesById(id: $recipeId) {
+      ...PostFields
+    }
+  }
+`
 
 export const GET_RECIPES_BY_AUTHOR = gql`
   ${RECIPE_FIELDS}
@@ -53,13 +61,9 @@ export const CREATE_RECIPE = gql`
     }
   }
 `
-export const NEW_LIKE = gql`
-  mutation newLike(
-    $recipeId: String!
-  ) {
-    newLike(
-      recipeId: $recipeId
-    ) {
+export const UPDATE_LIKES = gql`
+  mutation updateLikes($recipeId: ID) {
+    updateLikes(recipeId: $recipeId) {
       id
     }
   }

@@ -3,6 +3,7 @@ import {
   listAllRecipes,
   listRecipesByAuthor,
   listRecipesByTag,
+  getTotalLikes,
 } from '../services/recipes.js'
 
 export const querySchema = `#graphql
@@ -16,6 +17,7 @@ export const querySchema = `#graphql
         recipesByAuthor(username: String!, options: RecipesOptions): [Recipe!]!
         recipesByTag(tag: String!, options: RecipesOptions): [Recipe!]!
         recipeById(id: ID!): Recipe
+        likesById(id: ID!): Int
         }
         `
 export const queryResolver = {
@@ -34,6 +36,9 @@ export const queryResolver = {
     },
     recipeById: async (parent, { id }) => {
       return await getRecipeById(id)
+    },
+    likesById: async (parent, { id }) => {
+      return await getTotalLikes(id)
     },
   },
 }
